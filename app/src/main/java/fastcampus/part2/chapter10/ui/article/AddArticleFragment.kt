@@ -13,7 +13,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.ktx.firestore
@@ -28,7 +31,7 @@ import java.util.UUID
 class AddArticleFragment : Fragment(R.layout.fragment_add_article) {
 
     private lateinit var binding: FragmentAddArticleBinding
-    private var selectedUri: Uri? = null
+    private lateinit var viewModel: AddArticleViewModel
 
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -52,17 +55,23 @@ class AddArticleFragment : Fragment(R.layout.fragment_add_article) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentAddArticleBinding.bind(view)
 
-        permissionCheckAndStartContentProvider()
+        viewModel = ViewModelProvider(requireActivity()).get<AddArticleViewModel>()
+
+
+        if (viewModel.selectedUri.value == null) {
+            permissionCheckAndStartContentProvider()
+        }
+
 
         binding.photoImageView.setOnClickListener {
-            if (selectedUri == null) {
+            if (viewModel.selectedUri.value == null) {
                 permissionCheckAndStartContentProvider()
             }
         }
 
         binding.deleteButton.setOnClickListener {
             binding.photoImageView.setImageDrawable(null)
-            selectedUri = null
+            viewModel.updateSelectedUri(null)
             binding.plusIconView.isVisible = true
             binding.deleteButton.isVisible = false
         }
@@ -72,8 +81,8 @@ class AddArticleFragment : Fragment(R.layout.fragment_add_article) {
             showProgress()
 
             // 중간에 이미지가 있으면 업로드 과정을 추가
-            if (selectedUri != null) {
-                val photoUri = selectedUri ?: return@setOnClickListener
+            if (viewModel.selectedUri.value != null) {
+                val photoUri = viewModel.selectedUri.value ?: return@setOnClickListener
                 uploadPhoto(photoUri,
                     successHandler = { uri ->
                         uploadArticle(descriptionText, uri)
@@ -166,7 +175,7 @@ class AddArticleFragment : Fragment(R.layout.fragment_add_article) {
                 val uri = it?.data?.data
                 if (uri != null) {
                     binding.photoImageView.setImageURI(uri)
-                    selectedUri = uri
+                    viewModel.updateSelectedUri(uri)
                     binding.plusIconView.isVisible = false
                     binding.deleteButton.isVisible = true
                 } else {
