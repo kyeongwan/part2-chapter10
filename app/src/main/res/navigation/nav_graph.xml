@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="fastcampus.part2.chapter10.ui.home.HomeFragment"
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_addArticleFragment"
+            app:destination="@id/addArticleFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_homeFragment_to_articleFragment"
+            app:destination="@id/articleFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_bookMarkArticleFragment"
+            app:destination="@id/bookMarkArticleFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addArticleFragment"
+        android:name="fastcampus.part2.chapter10.ui.article.AddArticleFragment"
+        android:label="AddArticleFragment"
+        tools:layout="@layout/fragment_add_article">
+        <action
+            android:id="@+id/action_addArticleFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_back"
+            app:destination="@id/homeFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/myPageFragment"
+        android:name="fastcampus.part2.chapter10.ui.myhome.MyPageFragment"
+        android:label="MyPageFragment" />
+    <fragment
+        android:id="@+id/articleFragment"
+        android:name="fastcampus.part2.chapter10.ui.article.ArticleFragment"
+        android:label="사진" >
+        <argument
+            android:name="articleId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/bookMarkArticleFragment"
+        android:name="fastcampus.part2.chapter10.ui.bookmark.BookMarkArticleFragment"
+        android:label="BookMarkArticleFragment" >
+        <action
+            android:id="@+id/action_bookMarkArticleFragment_to_articleFragment"
+            app:destination="@id/articleFragment" />
+    </fragment>
+</navigation>
